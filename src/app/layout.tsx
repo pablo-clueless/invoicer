@@ -3,6 +3,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 
+import { ErrorBoundary, ReduxProvider } from "@/components/proivders";
 import { Toaster } from "@/components/ui/sonner";
 
 export const metadata: Metadata = {
@@ -26,8 +27,12 @@ export default function RootLayout({
         ></link>
       </head>
       <body className={`h-screen w-screen overflow-hidden antialiased`}>
-        {children}
-        <Toaster position="top-right" />
+        <ErrorBoundary>
+          <ReduxProvider>
+            {children}
+            <Toaster position="top-right" />
+          </ReduxProvider>
+        </ErrorBoundary>
       </body>
     </html>
   );

@@ -10,7 +10,10 @@ export interface UserProps {
   id: string;
   name: string;
   phone: string;
+  rcNumber: string;
+  taxId: string;
   updatedAt: Date;
+  website: string;
 }
 
 export interface BankInformationProps {
@@ -18,6 +21,8 @@ export interface BankInformationProps {
   accountNumber: string;
   bankName: string;
   bankSwiftCode: string;
+  iban: string;
+  routingNumber: string;
 }
 
 export interface InvoiceProps {
@@ -31,6 +36,7 @@ export interface InvoiceProps {
   id: string;
   items: InvoiceItemProps[];
   note: string;
+  referenceNo: string;
   status: InvoiceStatus;
   subTotal: number;
   tax: number;
