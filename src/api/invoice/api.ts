@@ -3,8 +3,8 @@ import Cookies from "js-cookie";
 
 import { COOKIE_NAME } from "@/config";
 
-const invoice = createApi({
-  reducerPath: "invoice",
+export const invoiceApi = createApi({
+  reducerPath: "invoice-api",
   baseQuery: fetchBaseQuery({
     baseUrl: process.env.NEXT_PUBLIC_BASE_URI,
     prepareHeaders: (headers) => {
@@ -19,4 +19,4 @@ const invoice = createApi({
   endpoints: () => ({}),
 });
 
-export const {} = invoice;
+export const {} = invoiceApi;

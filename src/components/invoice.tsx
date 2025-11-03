@@ -28,7 +28,7 @@ export const Invoice = ({ invoice }: Props) => {
         </div>
         <div className="flex w-full items-center justify-between">
           <div className="flex items-center gap-x-4">
-            <p className="text-xs text-gray-500 uppercase">{`INVOICE-${invoice.id.split("-")[0]}`}</p>
+            <p className="text-xs text-gray-500 uppercase">{`INVOICE-${invoice.referenceNo}`}</p>
             <p className="size-1 rounded-full bg-gray-500"></p>
             <p className="text-xs text-gray-500">{format(invoice.dateDue, "dd/MM/yyyy")}</p>
           </div>

@@ -1,7 +1,8 @@
 import { faker } from "@faker-js/faker";
+import { addDays } from "date-fns";
 
 import type { CustomerProps, DiscountType, InvoiceItemProps, InvoiceProps, InvoiceStatus } from "@/types";
-import { addDays } from "date-fns";
+import { generateReferenceNo } from "@/lib";
 
 const getRandomItem = <T>(arr: T[]): T => arr[Math.floor(Math.random() * arr.length)];
 
@@ -23,6 +24,7 @@ export const MOCK_INVOICES: InvoiceProps[] = Array.from({ length: 10 }, () => {
   const customer = getRandomItem(MOCK_CUSTOMERS);
   const status = getRandomItem(INVOICE_STATUS);
   const taxType = getRandomItem(DISCOUNT_TYPE);
+  const referenceNo = generateReferenceNo();
   const itemCount = faker.number.int({ min: 1, max: 5 });
   const items: InvoiceItemProps[] = Array.from({ length: itemCount }, () => {
     const quantity = faker.number.int({ min: 1, max: 20 });
@@ -53,11 +55,12 @@ export const MOCK_INVOICES: InvoiceProps[] = Array.from({ length: 10 }, () => {
     discountType: "percentage",
     id: faker.string.uuid(),
     items: items,
-    tax: tax,
-    taxType: taxType,
     note: "",
+    referenceNo: referenceNo,
     status: status,
     subTotal: subTotal,
+    tax: tax,
+    taxType: taxType,
     title: `Invoice for ${customer.name}`,
     total: total,
     updatedAt: new Date(),

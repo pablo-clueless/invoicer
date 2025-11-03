@@ -45,3 +45,4 @@ const auth = createSlice({
 });
 
 export const { signin, signout } = auth.actions;
+export default auth.reducer;
