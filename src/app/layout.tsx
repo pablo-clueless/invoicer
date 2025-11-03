@@ -25,7 +25,7 @@ export default function RootLayout({
           rel="stylesheet"
         ></link>
       </head>
-      <body className={`h-screen w-screen overflow-hidden py-4 antialiased`}>
+      <body className={`h-screen w-screen overflow-hidden antialiased`}>
         {children}
         <Toaster position="top-right" />
       </body>

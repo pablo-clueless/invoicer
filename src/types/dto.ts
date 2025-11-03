@@ -1,11 +1,11 @@
-import type { DiscountType } from "./app";
+import type { CustomerProps, DiscountType } from "./app";
+import type { Maybe } from "./util";
 
 export interface InvoiceDto {
-  companyName: string;
-  companyLogo: string;
   currency: string;
+  customer: Maybe<CustomerProps>;
   customerId: string;
-  dateDue: Date;
+  dateDue?: Date;
   dateIssued: Date;
   discount: number;
   discountType: DiscountType;

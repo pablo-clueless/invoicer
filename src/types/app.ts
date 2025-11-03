@@ -1,8 +1,26 @@
+export type InvoiceStatus = "pending" | "paid" | "overdue" | "draft";
 export type DiscountType = "fixed" | "percentage";
 
-export interface InvoiceProps {
-  companyName: string;
+export interface UserProps {
+  bankInformation: BankInformationProps;
   companyLogo: string;
+  companyName: string;
+  createdAt: Date;
+  email: string;
+  id: string;
+  name: string;
+  phone: string;
+  updatedAt: Date;
+}
+
+export interface BankInformationProps {
+  accountName: string;
+  accountNumber: string;
+  bankName: string;
+  bankSwiftCode: string;
+}
+
+export interface InvoiceProps {
   createdAt: Date;
   currency: string;
   customer: CustomerProps;
@@ -13,6 +31,7 @@ export interface InvoiceProps {
   id: string;
   items: InvoiceItemProps[];
   note: string;
+  status: InvoiceStatus;
   subTotal: number;
   tax: number;
   taxType: DiscountType;

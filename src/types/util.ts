@@ -44,7 +44,7 @@ export interface PaginatedParams {
 export interface RouteProps {
   label: string;
   href: string;
-  icon: RemixiconComponentType
+  icon: RemixiconComponentType;
   children?: {
     label: string;
     href: string;
@@ -56,4 +56,3 @@ export type Option = {
   value: string;
   [x: string]: string | number;
 };
-
