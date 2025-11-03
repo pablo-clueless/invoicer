@@ -3,7 +3,7 @@ import Cookies from "js-cookie";
 
 import { COOKIE_NAME } from "@/config";
 
-const api = createApi({
+export const api = createApi({
   reducerPath: "api",
   baseQuery: fetchBaseQuery({
     baseUrl: process.env.NEXT_PUBLIC_BASE_URI,

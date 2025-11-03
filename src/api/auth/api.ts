@@ -3,8 +3,8 @@ import Cookies from "js-cookie";
 
 import { COOKIE_NAME } from "@/config";
 
-const auth = createApi({
-  reducerPath: "auth",
+export const authApi = createApi({
+  reducerPath: "auth-api",
   baseQuery: fetchBaseQuery({
     baseUrl: process.env.NEXT_PUBLIC_BASE_URI,
     prepareHeaders: (headers) => {
@@ -19,4 +19,4 @@ const auth = createApi({
   endpoints: () => ({}),
 });
 
-export const {} = auth;
+export const {} = authApi;
