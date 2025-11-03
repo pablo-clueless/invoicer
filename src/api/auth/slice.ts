@@ -33,7 +33,7 @@ const auth = createSlice({
       state.token = "";
       Cookies.remove("USER");
       Cookies.remove(COOKIE_NAME);
-      window.location.href = "/";
+      window.location.href = "/signin";
     },
     update: (state, action: PayloadAction<{ user: UserProps }>) => {
       state.user = action.payload.user;
