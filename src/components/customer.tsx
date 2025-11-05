@@ -1,4 +1,4 @@
-import { RiDeleteBin4Line } from "@remixicon/react";
+import { RiDeleteBin4Line, RiLoaderLine } from "@remixicon/react";
 import React from "react";
 
 import { Dialog, DialogContent, DialogDescription, DialogTitle, DialogTrigger } from "./ui/dialog";
@@ -8,10 +8,11 @@ import { Button } from "./ui/button";
 
 interface Props {
   customer: CustomerProps;
+  isDeleting: boolean;
   onDeleteCustomer: (id: string) => void;
 }
 
-export const Customer = ({ customer, onDeleteCustomer }: Props) => {
+export const Customer = ({ customer, isDeleting, onDeleteCustomer }: Props) => {
   const [open, setOpen] = React.useState(false);
 
   return (
@@ -25,7 +26,7 @@ export const Customer = ({ customer, onDeleteCustomer }: Props) => {
           <p className="text-xs text-gray-500 lowercase">{customer.email}</p>
         </div>
       </div>
-      <Dialog onOpenChange={setOpen} open={open}>
+      <Dialog onOpenChange={(open) => !isDeleting && setOpen(open)} open={open}>
         <DialogTrigger asChild>
           <button>
             <RiDeleteBin4Line className="size-4 text-red-500" />
@@ -37,11 +38,11 @@ export const Customer = ({ customer, onDeleteCustomer }: Props) => {
             Are you sure you want to delete this customer? This action is irreversible, be sure before continuing
           </DialogDescription>
           <div className="grid grid-cols-2 gap-x-5">
-            <Button onClick={() => setOpen(false)} size="sm" variant="outline">
+            <Button disabled={isDeleting} onClick={() => setOpen(false)} size="sm" variant="outline">
               Cancel
             </Button>
-            <Button onClick={() => onDeleteCustomer(customer.id)} size="sm" variant="destructive">
-              Delete
+            <Button disabled={isDeleting} onClick={() => onDeleteCustomer(customer.id)} size="sm" variant="destructive">
+              {isDeleting ? <RiLoaderLine className="animate-spin" /> : "Delete"}
             </Button>
           </div>
         </DialogContent>

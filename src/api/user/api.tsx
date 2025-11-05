@@ -1,11 +1,11 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import Cookies from "js-cookie";
 
+import type { HttpResponse, UpdateUserDto, UserProps } from "@/types";
 import { COOKIE_NAME } from "@/config";
-import type { HttpResponse, UserProps } from "@/types";
 
-export const api = createApi({
-  reducerPath: "api",
+export const userApi = createApi({
+  reducerPath: "user-api",
   baseQuery: fetchBaseQuery({
     baseUrl: process.env.NEXT_PUBLIC_BASE_URI,
     prepareHeaders: (headers) => {
@@ -16,14 +16,22 @@ export const api = createApi({
       return headers;
     },
   }),
+  tagTypes: ["Invoice"],
   endpoints: (builder) => ({
-    getMe: builder.query<HttpResponse<UserProps>, undefined>({
+    updateUser: builder.mutation<HttpResponse<UserProps>, UpdateUserDto>({
+      query: (payload) => ({
+        url: "/users",
+        method: "PUT",
+        body: payload,
+      }),
+    }),
+    deleteUser: builder.mutation<HttpResponse<string>, undefined>({
       query: () => ({
         url: "/users",
-        method: "GET",
+        method: "DELETE",
       }),
     }),
   }),
 });
 
-export const { useGetMeQuery } = api;
+export const { useDeleteUserMutation, useUpdateUserMutation } = userApi;

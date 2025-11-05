@@ -21,3 +21,11 @@ export const generateReferenceNo = () => {
   const randomPart = Math.random().toString(36).substring(2, 6).toUpperCase();
   return `${timestamp}${randomPart}`;
 };
+
+export const getInitials = (value?: string) => {
+  if (!value) return "";
+  return value
+    .split(" ")
+    .map((word) => word.charAt(0))
+    .join("");
+};

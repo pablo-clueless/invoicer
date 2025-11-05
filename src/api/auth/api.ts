@@ -16,7 +16,26 @@ export const authApi = createApi({
     },
   }),
   tagTypes: ["Authentication", "User"],
-  endpoints: () => ({}),
+  endpoints: (builder) => ({
+    google: builder.query({
+      query: () => ({
+        url: "/auth/google",
+        method: "POST",
+      }),
+    }),
+    googleCallback: builder.query({
+      query: () => ({
+        url: "/auth/google/callback",
+        method: "POST",
+      }),
+    }),
+    signout: builder.query({
+      query: () => ({
+        url: "/auth/signout",
+        method: "GET",
+      }),
+    }),
+  }),
 });
 
-export const {} = authApi;
+export const { useGoogleCallbackQuery, useGoogleQuery, useSignoutQuery } = authApi;
