@@ -11,7 +11,8 @@ export type MaybePromiseOrNull<T> = MaybePromise<Nullable<T>>;
 export interface HttpResponse<T> {
   data: T;
   message: string;
-  status: number;
+  success: boolean;
+  timestamp: Date;
 }
 
 export interface HttpError {
@@ -27,13 +28,11 @@ export interface HttpError {
 }
 
 export interface PaginatedResponse<T> {
-  content: T[];
-  first: boolean;
-  last: boolean;
-  pageNumber: number;
-  pageSize: number;
-  totalElements: number;
-  totalPages: number;
+  items: T[];
+  limit: number;
+  page: number;
+  total_items: number;
+  total_pages: number;
 }
 
 export interface PaginatedParams {
@@ -56,3 +55,19 @@ export type Option = {
   value: string;
   [x: string]: string | number;
 };
+
+export interface ValidationError {
+  field: string;
+  message: string;
+  index?: number;
+}
+
+export interface ValidationProps {
+  errors: ValidationError[];
+  isValid: boolean;
+  summary?: {
+    total: number;
+    valid: number;
+    invalid: number;
+  };
+}

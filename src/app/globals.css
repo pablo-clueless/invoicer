@@ -19,19 +19,19 @@
   --card-background: #fafcff;
   --header-background: #fafcff;
 
-  --primary-100: #a1a6fa;
-  --primary-200: #7279f7;
-  --primary-300: #434cf5;
-  --primary-400: #151ff2;
-  --primary-500: #0b15ca;
-  --primary-600: #09109b;
-  --primary-700: #060b6c;
-  --primary-800: #040742;
+  --primary-100: #f9dfbf;
+  --primary-200: #f3be7f;
+  --primary-300: #efa954;
+  --primary-400: #ed9e3e;
+  --primary-500: #eb9329;
+  --primary-600: #8d5819;
+  --primary-700: #5e3b10;
+  --primary-800: #2f1d08;
 
   --secondary-100: #e3f2ff;
   --secondary-200: #8bc9ff;
   --secondary-300: #51aeff;
-  --secondary-400: #1d96ff;
+  --secondary-400: #18abd9;
   --secondary-500: #007ce9;
   --secondary-600: #0061b5;
   --secondary-700: #004581;
@@ -65,7 +65,7 @@
   --color-secondary-600: var(--secondary-600);
   --color-secondary-700: var(--secondary-700);
 
-  --background-image-auth: url("/assets/images/auth.png");
+  --background-image-auth: url("https://images.unsplash.com/photo-1654263937079-f63a3ea4d48b?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=1170");
 }
 
 @layer base {

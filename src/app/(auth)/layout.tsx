@@ -6,9 +6,9 @@ interface Props {
 
 const AuthLayout = ({ children }: Props) => {
   return (
-    <div className="grid h-screen w-screen grid-cols-4">
-      <div className="col-span-3 h-full"></div>
-      <div className="h-full">{children}</div>
+    <div className="flex h-screen w-screen items-center">
+      <div className="bg-auth h-full flex-1 bg-cover bg-center bg-no-repeat"></div>
+      <div className="h-full min-w-[450px]">{children}</div>
     </div>
   );
 };

@@ -1,54 +1,70 @@
 "use client";
 
+import { useParams, useRouter } from "next/navigation";
 import { RiDeleteBin4Line } from "@remixicon/react";
-import { useRouter } from "next/navigation";
 import { subDays } from "date-fns";
 import { toast } from "sonner";
 import React from "react";
 
-import type { DiscountType, HttpError, InvoiceDto, InvoiceItemDto } from "@/types";
-import { Breadcrumb, DatePicker, Select } from "@/components/shared";
-import { useCreateInvoiceMutation } from "@/api/invoice/api";
-import { formatCurrency, validateInvoiceDto } from "@/lib";
+import type { DiscountType, HttpError, InvoiceItemDto, InvoiceStatus, UpdateInvoiceDto } from "@/types";
+import { useGetInvoiceQuery, useUpdateInvoiceMutation } from "@/api/invoice/api";
+import { Breadcrumb, DatePicker, Loader, Select } from "@/components/shared";
 import { useGetCustomersQuery } from "@/api/customer/api";
 import { AddCustomer } from "@/components/add-customer";
 import { Textarea } from "@/components/ui/textarea";
 import { WithAuth } from "@/components/providers";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { INVOICE_STATUSES } from "@/config";
 import { CURRENCIES } from "@/constants";
+import { formatCurrency } from "@/lib";
 
 const DISCOUNT_TYPES = [
   { label: "Fixed", value: "fixed" },
   { label: "Percentage", value: "percentage" },
 ];
 
-const initialValues: InvoiceDto = {
-  currency: "NGN",
-  customerId: "",
-  dateDue: new Date(),
-  discount: 0,
-  discountType: "fixed",
-  isDraft: false,
-  items: [],
-  note: "",
-  tax: 0,
-  taxType: "fixed",
-  title: "",
-};
-const initialItems: InvoiceItemDto = {
-  description: "",
-  lineTotal: 0,
-  price: 0,
-  quantity: 0,
-};
-
 const Page = () => {
-  const [items, setItems] = React.useState<InvoiceItemDto[]>([initialItems]);
+  const id = useParams().id as string;
   const router = useRouter();
 
+  const { data: invoice, isFetching } = useGetInvoiceQuery(id, { skip: !id, refetchOnMountOrArgChange: true });
+
+  const initialValues: UpdateInvoiceDto = {
+    currency: invoice?.data.currency || "NGN",
+    customerId: invoice?.data.customer.id || "",
+    dateDue: invoice?.data.dateDue || new Date(),
+    discount: invoice?.data.discount || 0,
+    discountType: invoice?.data.discountType || "fixed",
+    items:
+      invoice?.data.items.map((item) => ({
+        description: item.description,
+        lineTotal: item.lineTotal,
+        price: item.price,
+        quantity: item.quantity,
+      })) || [],
+    note: invoice?.data.note || "",
+    status: invoice?.data.status || "pending",
+    tax: invoice?.data.tax || 0,
+    taxType: invoice?.data.taxType || "fixed",
+    title: invoice?.data.title || "",
+  };
+
+  const initialItems = React.useMemo((): InvoiceItemDto[] => {
+    if (!invoice) return [];
+    return invoice.data.items.map((item) => ({
+      description: item.description,
+      lineTotal: item.lineTotal,
+      price: item.price,
+      quantity: item.quantity,
+    }));
+  }, [invoice]);
+
+  const [items, setItems] = React.useState<InvoiceItemDto[]>(initialItems);
+
   const addItem = () => {
-    setItems((prev) => [...prev, initialItems]);
+    const newItem: InvoiceItemDto = { description: "", lineTotal: 0, price: 0, quantity: 0 };
+    setItems((prev) => [...prev, newItem]);
   };
 
   const updateItem = (index: number, values: InvoiceItemDto) => {
@@ -63,51 +79,26 @@ const Page = () => {
     setItems((prev) => prev.filter((_, i) => i !== index));
   };
 
-  const [newInvoice, setNewInvoice] = React.useState<InvoiceDto>(initialValues);
+  const [newInvoice, setNewInvoice] = React.useState<UpdateInvoiceDto>(initialValues);
 
-  const [createInvoice, { isLoading }] = useCreateInvoiceMutation();
+  const [updateInvoice, { isLoading }] = useUpdateInvoiceMutation();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setNewInvoice((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
-  const setFieldValue = React.useCallback(<K extends keyof InvoiceDto>(field: K, value: InvoiceDto[K]) => {
+  const setFieldValue = React.useCallback(<K extends keyof UpdateInvoiceDto>(field: K, value: UpdateInvoiceDto[K]) => {
     setNewInvoice((prev) => ({ ...prev, [field]: value }));
   }, []);
 
-  const handleSaveDraft = async () => {
-    const payload: InvoiceDto = {
-      ...newInvoice,
-      discount: Number(newInvoice.discount),
-      tax: Number(newInvoice.tax),
-      items,
-      isDraft: true,
-    };
-    createInvoice(payload)
-      .unwrap()
-      .then((response) => {
-        const message = response.message || "";
-        toast.success(message);
-        router.push("/");
-      })
-      .catch((error) => {
-        const message = (error as HttpError).data.message || "Error creating invoice";
-        toast.error(message);
-      });
-  };
-
   const handleSubmit = async () => {
-    const payload: InvoiceDto = {
+    const payload: UpdateInvoiceDto = {
       ...newInvoice,
       discount: Number(newInvoice.discount),
       tax: Number(newInvoice.tax),
       items,
     };
-    const { errors, isValid } = validateInvoiceDto(payload);
-    if (!isValid) {
-      toast.error(errors[0].message);
-    }
-    createInvoice(payload)
+    updateInvoice({ id, payload })
       .unwrap()
       .then((response) => {
         const message = response.message || "";
@@ -142,6 +133,11 @@ const Page = () => {
     return customer;
   }, [customers, newInvoice.customerId]);
 
+  if (isFetching)
+    <div className="grid h-full w-full place-items-center py-4">
+      <Loader />
+    </div>;
+
   return (
     <WithAuth>
       <div className="h-full w-full py-4">
@@ -149,7 +145,7 @@ const Page = () => {
           <Breadcrumb
             items={[
               { label: "Invoices", href: "" },
-              { label: "New Invoice", href: "/invoices/new" },
+              { label: "New Invoice", href: `"/invoices/edit/${invoice}` },
             ]}
           />
           <div className="space-y-4">
@@ -183,7 +179,7 @@ const Page = () => {
                 <p className="text-sm text-gray-500"></p>
               </div>
               <div className="grid grid-cols-2 gap-x-5 gap-y-2">
-                <Input label="Invoice Title" name="title" onChange={handleChange} />
+                <Input label="Invoice Title" name="title" onChange={handleChange} value={newInvoice.title} />
                 <Select
                   label="Currency"
                   onValueChange={(value) => setFieldValue("currency", value)}
@@ -198,6 +194,12 @@ const Page = () => {
                     selected={newInvoice.dateDue}
                   />
                 </div>
+                <Select
+                  label="Status"
+                  onValueChange={(value) => setFieldValue("status", value as InvoiceStatus)}
+                  options={INVOICE_STATUSES}
+                  value={newInvoice.status}
+                />
               </div>
               <div className="space-y-2 py-4">
                 <p className="text-lg font-medium text-gray-700">Invoice Items</p>
@@ -269,7 +271,7 @@ const Page = () => {
                   </div>
                 </div>
               </div>
-              <Textarea label="Notes" name="note" onChange={handleChange} />
+              <Textarea label="Notes" name="note" onChange={handleChange} value={newInvoice.note} />
             </div>
             <hr />
             <div className="flex items-center justify-between">
@@ -277,11 +279,8 @@ const Page = () => {
                 Cancel
               </Button>
               <div className="flex items-center gap-x-5">
-                <Button disabled={isLoading} onClick={handleSaveDraft} variant="outline">
-                  Save Draft
-                </Button>
                 <Button disabled={isLoading} onClick={handleSubmit} type="submit">
-                  Preview
+                  Save Changes
                 </Button>
               </div>
             </div>

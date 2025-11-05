@@ -3,7 +3,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 
-import { ErrorBoundary, ReduxProvider } from "@/components/proivders";
+import { ErrorBoundary, ReduxProvider } from "@/components/providers";
 import { Toaster } from "@/components/ui/sonner";
 
 export const metadata: Metadata = {
